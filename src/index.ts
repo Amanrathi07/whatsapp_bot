@@ -21,13 +21,20 @@ app.post("/webhook", async (req, res) => {
 
   const body = req.body.Body;
   const from = req.body.From;
-  await prismaClient.user.findFirst({
+  const existingUser =await prismaClient.user.findFirst({
     where:{
       phone:from
     }
   })
 
-  
+  if(!existingUser){
+    await prismaClient.user.create({
+      data:{
+        phone:from ,
+        name : res.body.name
+      }
+    })
+  }
   try {
     if (body === "Hello") {
       await sendResponse(from, "Hello 👋");
