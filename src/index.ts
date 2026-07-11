@@ -21,6 +21,7 @@ app.post("/webhook", async (req, res) => {
 
   const body = req.body.Body;
   const from = req.body.From;
+  const whatsappName = req.body.ProfileName;
   const existingUser =await prismaClient.user.findFirst({
     where:{
       phone:from
@@ -29,11 +30,11 @@ app.post("/webhook", async (req, res) => {
 
   if(!existingUser){
     await prismaClient.user.create({
-      data:{
-        phone:from ,
-        name : res.body.name
-      }
-    })
+  data: {
+    phone: from,
+    name: whatsappName,
+  },
+});
   }
   try {
     if (body === "Hello") {
